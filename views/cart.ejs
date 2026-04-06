@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+<h2><i class="bi bi-cart-fill"></i> Giỏ hàng của bạn</h2>
+<% if (!cart || cart.length === 0) { %>
+  <div class="alert alert-warning text-center">🛒 Giỏ hàng trống. <a href="/customer/products" class="alert-link">Tiếp tục mua hàng</a></div>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="table table-custom">
+      <thead>
+        <tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th>Hành động</th></tr>
+      </thead>
+      <tbody>
+        <% let total = 0; %>
+        <% cart.forEach((item, idx) => { total += item.price * item.quantity; %>
+          <tr>
+            <td><%= item.name %></td>
+            <td><%= item.price.toLocaleString() %>đ</td>
+            <td>
+              <form method="post" action="/customer/update-cart/<%= idx %>" class="d-flex gap-2">
+                <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="form-control w-50">
+                <button type="submit" class="btn btn-sm btn-secondary">Cập nhật</button>
+              </form>
+            </td>
+            <td><strong><%= (item.price * item.quantity).toLocaleString() %>đ</strong></td>
+            <td><a href="/customer/remove-from-cart/<%= idx %>" class="btn btn-sm btn-danger" onclick="return confirm('Xóa?')"><i class="bi bi-trash"></i></a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+      <tfoot>
+        <tr class="table-active">
+          <td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
+          <td class="fw-bold fs-5"><%= total.toLocaleString() %>đ</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <form method="post" action="/customer/place-order" class="mt-3 text-end">
+    <label class="form-label fw-bold">Ngày giao hàng:</label>
+    <input type="date" name="deliveryDate" class="form-control d-inline w-auto" required>
+    <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 ms-3">Đặt hàng <i class="bi bi-check2-circle"></i></button>
+  </form>
+<% } %>
+<%- include('partials/footer') %>

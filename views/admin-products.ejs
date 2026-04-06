@@ -1,0 +1,61 @@
+<%- include('partials/header') %>
+<h2><i class="bi bi-cake2"></i> Quản lý sản phẩm</h2>
+
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">➕ Thêm sản phẩm mới</div>
+  <div class="card-body">
+    <form method="post" action="/admin/products/add">
+      <div class="row g-2">
+        <div class="col-md-3"><input type="text" name="name" class="form-control" placeholder="Tên bánh" required></div>
+        <div class="col-md-2"><input type="number" name="price" class="form-control" placeholder="Giá" required></div>
+        <div class="col-md-3"><input type="text" name="description" class="form-control" placeholder="Mô tả"></div>
+        <div class="col-md-3"><input type="text" name="imageUrl" class="form-control" placeholder="URL ảnh"></div>
+        <div class="col-md-1"><button type="submit" class="btn btn-success w-100">Thêm</button></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-custom">
+    <thead><tr><th>ID</th><th>Ảnh</th><th>Tên</th><th>Giá</th><th>Mô tả</th><th>Hành động</th></tr></thead>
+    <tbody>
+      <% products.forEach(p => { %>
+        <tr>
+          <td><%= p.id %></td>
+          <td><img src="<%= p.imageUrl %>" width="50" height="50" style="object-fit:cover; border-radius:10px;"></td>
+          <td><%= p.name %></td>
+          <td><%= p.price.toLocaleString() %>đ</td>
+          <td><%= p.description %></td>
+          <td>
+            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal<%= p.id %>"><i class="bi bi-pencil"></i> Sửa</button>
+            <form method="post" action="/admin/products/delete/<%= p.id %>" style="display:inline" onsubmit="return confirm('Xóa?')">
+              <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Xóa</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal sửa -->
+<% products.forEach(p => { %>
+<div class="modal fade" id="editModal<%= p.id %>" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="/admin/products/edit/<%= p.id %>">
+        <div class="modal-header bg-warning"><h5>Sửa sản phẩm</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <input type="text" name="name" value="<%= p.name %>" class="form-control mb-2" required>
+          <input type="number" name="price" value="<%= p.price %>" class="form-control mb-2" required>
+          <textarea name="description" class="form-control mb-2"><%= p.description %></textarea>
+          <input type="text" name="imageUrl" value="<%= p.imageUrl %>" class="form-control">
+        </div>
+        <div class="modal-footer"><button type="submit" class="btn btn-primary">Lưu</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+<% }) %>
+<%- include('partials/footer') %>

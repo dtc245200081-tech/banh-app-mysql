@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+<h2>⚙️ Cài đặt hệ thống</h2>
+
+<div class="card">
+  <div class="card-header bg-warning">Công suất sản xuất</div>
+  <div class="card-body">
+    <form method="post" action="/admin/settings">
+      <div class="row">
+        <div class="col-md-4">
+          <label class="form-label">Số lượng bánh tối đa mỗi ngày</label>
+          <input type="number" name="capacity" value="<%= capacity %>" class="form-control" required>
+        </div>
+        <div class="col-md-2 align-self-end">
+          <button type="submit" class="btn btn-primary">Lưu cài đặt</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<%- include('partials/footer') %>

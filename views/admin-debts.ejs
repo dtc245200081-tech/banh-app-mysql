@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+<h2>💰 Quản lý công nợ</h2>
+
+<h4>Danh sách đơn hàng chưa thanh toán</h4>
+<% if (unpaidOrders.length === 0) { %>
+  <div class="alert alert-success">Không có đơn hàng nào chưa thanh toán.</div>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead class="table-light"><tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Thanh toán</th></tr></thead>
+      <tbody>
+        <% unpaidOrders.forEach(o => { %>
+          <tr><td><%= o.id %></td><td><%= o.customerName %></td><td><%= o.totalAmount.toLocaleString() %>đ</td>
+            <td><form method="post" action="/admin/debts/pay/<%= o.id %>"><button class="btn btn-sm btn-success">Đã thanh toán</button></form></td>
+          </tr><% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<h4>Tổng nợ theo khách hàng</h4>
+<table class="table table-striped">
+  <thead class="table-dark"><tr><th>Khách hàng</th><th>Tổng nợ</th></tr></thead>
+  <tbody>
+    <% let hasDebt = false; %>
+    <% for (const customer in debts) { if (debts[customer] > 0) { hasDebt = true; %>
+      <tr><td><%= customer %></td><td><%= debts[customer].toLocaleString() %>đ</td></tr>
+    <% } } %>
+    <% if (!hasDebt) { %><tr><td colspan="2" class="text-center">Không có khách hàng nào còn nợ</td></tr><% } %>
+  </tbody>
+</table>
+<%- include('partials/footer') %>

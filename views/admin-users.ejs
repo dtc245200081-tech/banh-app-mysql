@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+<h2>👥 Quản lý tài khoản</h2>
+
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">Thêm tài khoản mới</div>
+  <div class="card-body">
+    <form method="post" action="/admin/users/add">
+      <div class="row">
+        <div class="col-md-3"><input type="text" name="name" placeholder="Họ tên" class="form-control" required></div>
+        <div class="col-md-3"><input type="email" name="email" placeholder="Email" class="form-control" required></div>
+        <div class="col-md-2"><input type="password" name="password" placeholder="Mật khẩu" class="form-control" required></div>
+        <div class="col-md-2">
+          <select name="role" class="form-select">
+            <option value="customer">Khách hàng</option>
+            <option value="staff">Nhân viên</option>
+            <option value="admin">Quản trị</option>
+          </select>
+        </div>
+        <div class="col-md-2"><input type="text" name="phone" placeholder="SĐT" class="form-control"></div>
+        <div class="col-md-1"><button type="submit" class="btn btn-success">Thêm</button></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<table class="table table-bordered table-striped">
+  <thead class="table-dark"><tr><th>ID</th><th>Tên</th><th>Email</th><th>Vai trò</th><th>SĐT</th><th>Hành động</th></tr></thead>
+  <tbody>
+    <% users.forEach(u => { %>
+      <tr>
+        <td><%= u.id %></td><td><%= u.name %></td><td><%= u.email %></td><td><%= u.role %></td><td><%= u.phone || '—' %></td>
+        <td>
+          <% if (u.role !== 'admin') { %>
+            <form method="post" action="/admin/users/delete/<%= u.id %>" onsubmit="return confirm('Xóa tài khoản này?')" style="display:inline">
+              <button class="btn btn-sm btn-danger">Xóa</button>
+            </form>
+          <% } else { %>
+            <span class="text-muted">—</span>
+          <% } %>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+<%- include('partials/footer') %>

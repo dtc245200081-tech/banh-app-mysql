@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>🍰 Xưởng Bánh - Đặt bánh online</title>
+  <!-- Bootstrap 5 + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <i class="bi bi-cake2"></i> Xưởng Bánh
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <% if (!user) { %>
+          <li class="nav-item"><a class="nav-link" href="/auth/login"><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a></li>
+          <li class="nav-item"><a class="nav-link" href="/auth/register"><i class="bi bi-person-plus"></i> Đăng ký</a></li>
+        <% } else { %>
+          <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house"></i> Trang chủ</a></li>
+          <% if (user.role === 'customer') { %>
+            <li class="nav-item"><a class="nav-link" href="/customer/products"><i class="bi bi-grid"></i> Sản phẩm</a></li>
+            <li class="nav-item"><a class="nav-link" href="/customer/my-orders"><i class="bi bi-receipt"></i> Đơn của tôi</a></li>
+          <% } else if (user.role === 'staff') { %>
+            <li class="nav-item"><a class="nav-link" href="/staff/orders"><i class="bi bi-clipboard-check"></i> Xử lý đơn</a></li>
+            <li class="nav-item"><a class="nav-link" href="/staff/production-plan"><i class="bi bi-calendar-week"></i> Kế hoạch SX</a></li>
+          <% } else if (user.role === 'admin') { %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-gear"></i> Quản lý
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/admin/products"><i class="bi bi-cake"></i> Sản phẩm</a></li>
+                <li><a class="dropdown-item" href="/admin/users"><i class="bi bi-people"></i> Tài khoản</a></li>
+                <li><a class="dropdown-item" href="/admin/debts"><i class="bi bi-cash-stack"></i> Công nợ</a></li>
+                <li><a class="dropdown-item" href="/admin/reports"><i class="bi bi-bar-chart"></i> Báo cáo</a></li>
+                <li><a class="dropdown-item" href="/admin/settings"><i class="bi bi-sliders2"></i> Công suất</a></li>
+              </ul>
+            </li>
+          <% } %>
+          <li class="nav-item"><a class="nav-link" href="/auth/logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất (<%= user.name %>)</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+<main class="container my-4">

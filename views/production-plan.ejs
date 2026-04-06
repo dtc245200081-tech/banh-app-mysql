@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+<h2>📋 Kế hoạch sản xuất</h2>
+
+<% if (Object.keys(plan).length === 0) { %>
+  <div class="alert alert-info">Chưa có đơn hàng nào được xác nhận.</div>
+<% } else { %>
+  <% for (const date in plan) { %>
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5>📅 Ngày giao: <%= new Date(date).toLocaleDateString('vi-VN') %></h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr><th>Mã đơn</th><th>Khách hàng</th><th>Sản phẩm</th><th>Số lượng</th><th>Trạng thái</th></tr>
+            </thead>
+            <tbody>
+              <% plan[date].forEach(order => { %>
+                <tr>
+                  <td><%= order.id %></td>
+                  <td><%= order.customerName %></td>
+                  <td>
+                    <% order.items.forEach(item => { %>
+                      - <%= item.productName %><br>
+                    <% }) %>
+                  </td>
+                  <td><%= order.items.reduce((sum, i) => sum + i.quantity, 0) %></td>
+                  <td><%= order.status %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% } %>
+<% } %>
+<a href="/staff/orders" class="btn btn-secondary">← Quay lại</a>
+<%- include('partials/footer') %>

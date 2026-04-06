@@ -1,0 +1,41 @@
+<%- include('partials/header') %>
+<h2><i class="bi bi-receipt"></i> Lịch sử đơn hàng</h2>
+<% if (orders.length === 0) { %>
+  <div class="alert alert-info">Bạn chưa có đơn hàng nào. <a href="/customer/products">Đặt ngay</a></div>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="table table-custom">
+      <thead><tr><th>Mã đơn</th><th>Ngày đặt</th><th>Ngày giao</th><th>Sản phẩm</th><th>Tổng tiền</th><th>Trạng thái</th><th>Hủy</th></tr></thead>
+      <tbody>
+        <% orders.forEach(o => { %>
+          <tr>
+            <td><%= o.id %></td>
+            <td><%= new Date(o.orderDate).toLocaleDateString('vi-VN') %></td>
+            <td><%= new Date(o.deliveryDate).toLocaleDateString('vi-VN') %></td>
+            <td><% o.items.forEach(i => { %><span class="badge bg-secondary"><%= i.productName %> x<%= i.quantity %></span><br><% }) %></td>
+            <td><strong><%= o.totalAmount.toLocaleString() %>đ</strong></td>
+            <td>
+              <% if (o.status === 'Chờ xác nhận') { %>
+                <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+              <% } else if (o.status === 'Đang làm') { %>
+                <span class="badge bg-info">Đang làm</span>
+              <% } else if (o.status === 'Hoàn thành') { %>
+                <span class="badge bg-primary">Hoàn thành</span>
+              <% } else if (o.status === 'Đã giao') { %>
+                <span class="badge bg-success">Đã giao</span>
+              <% } else { %>
+                <span class="badge bg-danger">Đã hủy</span>
+              <% } %>
+            </td>
+            <td>
+              <% if (o.status === 'Chờ xác nhận') { %>
+                <a href="/customer/cancel-order/<%= o.id %>" class="btn btn-sm btn-danger" onclick="return confirm('Hủy đơn?')"><i class="bi bi-x-circle"></i> Hủy</a>
+              <% } else { %>—<% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+<%- include('partials/footer') %>
