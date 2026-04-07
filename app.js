@@ -19,7 +19,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.set('trust proxy', 1);
 app.use(session({
   secret: process.env.SESSION_SECRET || 'default-secret-change-in-production',
   resave: false,
@@ -27,6 +27,7 @@ app.use(session({
   cookie: { 
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
   }
 }));
 
