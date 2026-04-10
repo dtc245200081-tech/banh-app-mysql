@@ -1,7 +1,6 @@
 const { Product, Order, OrderItem, Setting } = require('../models');
 const { Op } = require('sequelize');
 
-// Middleware kiểm tra role customer
 exports.requireCustomer = (req, res, next) => {
   if (!req.session.user || req.session.user.role !== 'customer') {
     return res.redirect('/auth/login');
@@ -9,7 +8,6 @@ exports.requireCustomer = (req, res, next) => {
   next();
 };
 
-// Hiển thị danh sách sản phẩm
 exports.showProducts = async (req, res) => {
   try {
     const products = await Product.findAll();
@@ -20,7 +18,6 @@ exports.showProducts = async (req, res) => {
   }
 };
 
-// Thêm vào giỏ hàng (dùng session)
 exports.addToCart = (req, res) => {
   const { productId, quantity, deliveryDate } = req.body;
   if (!req.session.cart) req.session.cart = [];
@@ -32,7 +29,6 @@ exports.addToCart = (req, res) => {
   res.redirect('/customer/cart');
 };
 
-// Hiển thị giỏ hàng
 exports.showCart = async (req, res) => {
   const cart = req.session.cart || [];
   const productIds = cart.map(item => item.productId);
@@ -50,7 +46,6 @@ exports.showCart = async (req, res) => {
   res.render('cart', { cart: cartItems });
 };
 
-// Cập nhật số lượng trong giỏ
 exports.updateCart = (req, res) => {
   const index = parseInt(req.params.index);
   const { quantity } = req.body;
@@ -60,7 +55,6 @@ exports.updateCart = (req, res) => {
   res.redirect('/customer/cart');
 };
 
-// Xóa sản phẩm khỏi giỏ
 exports.removeFromCart = (req, res) => {
   const index = parseInt(req.params.index);
   if (req.session.cart && req.session.cart[index]) {
@@ -69,14 +63,12 @@ exports.removeFromCart = (req, res) => {
   res.redirect('/customer/cart');
 };
 
-// Đặt hàng
 exports.placeOrder = async (req, res) => {
   const cart = req.session.cart;
   if (!cart || cart.length === 0) return res.redirect('/customer/products');
 
   const { deliveryDate, deliveryAddress } = req.body; // ✅ Nhận deliveryAddress
 
-  // Kiểm tra công suất
   const settings = await Setting.findOne({ where: { id: 1 } });
   const capacity = settings ? settings.dailyCapacity : 50;
 
@@ -98,14 +90,12 @@ exports.placeOrder = async (req, res) => {
     return res.send('<script>alert("Vượt quá công suất sản xuất ngày này!"); window.location.href="/customer/cart";</script>');
   }
 
-  // Tính tổng tiền
   const productIds = cart.map(item => item.productId);
   const products = await Product.findAll({ where: { id: productIds } });
   let totalAmount = 0;
   const orderItems = cart.map(item => {
     const prod = products.find(p => p.id === item.productId);
-    const subtotal = prod.price * item.quantity;
-    totalAmount += subtotal;
+    totalAmount += prod.price * item.quantity;
     return {
       productId: item.productId,
       productName: prod.name,
@@ -114,7 +104,6 @@ exports.placeOrder = async (req, res) => {
     };
   });
 
-  // Tạo đơn hàng
   const newOrder = await Order.create({
     customerId: req.session.user.id,
     customerName: req.session.user.name,
@@ -126,7 +115,6 @@ exports.placeOrder = async (req, res) => {
     isPaid: false
   });
 
-  // Tạo các order items
   for (let item of orderItems) {
     await OrderItem.create({
       orderId: newOrder.id,
@@ -137,12 +125,10 @@ exports.placeOrder = async (req, res) => {
     });
   }
 
-  // Xóa giỏ hàng
   req.session.cart = [];
   res.redirect('/customer/my-orders');
 };
 
-// Xem đơn hàng của tôi
 exports.myOrders = async (req, res) => {
   try {
     const orders = await Order.findAll({
@@ -159,7 +145,6 @@ exports.myOrders = async (req, res) => {
   }
 };
 
-// Hủy đơn hàng (nếu chưa xử lý)
 exports.cancelOrder = async (req, res) => {
   const orderId = req.params.id;
   try {
