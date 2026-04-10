@@ -1,33 +1,56 @@
 <%- include('partials/header') %>
+
 <h2><i class="bi bi-clipboard2-check"></i> Quản lý đơn hàng</h2>
+
 <div class="table-responsive">
   <table class="table table-custom">
     <thead>
-      <tr><th>ID</th><th>Khách hàng</th><th>Sản phẩm</th><th>Tổng tiền</th><th>Trạng thái</th><th>Ngày giao</th><th>Thao tác</th></tr>
+      <tr>
+        <th>ID</th>
+        <th>Khách hàng</th>
+        <th>Sản phẩm</th>
+        <th>Tổng tiền</th>
+        <th>Trạng thái</th>
+        <th>Ngày giao</th>
+        <th>📍 Địa chỉ nhận hàng</th>
+        <th>Thao tác</th>
+      </tr>
     </thead>
     <tbody>
       <% orders.forEach(o => { %>
         <tr>
           <td><%= o.id %></td>
           <td><%= o.customerName %></td>
-          <td><% o.items.forEach(i => { %><%= i.productName %> x<%= i.quantity %><br><% }) %></td>
+          <td>
+            <% o.items.forEach(i => { %>
+              <%= i.productName %> x<%= i.quantity %><br>
+            <% }) %>
+          </td>
           <td><%= o.totalAmount.toLocaleString() %>đ</td>
           <td>
-            <span class="badge <%= o.status === 'Chờ xác nhận' ? 'bg-warning text-dark' : (o.status === 'Đang làm' ? 'bg-info' : (o.status === 'Hoàn thành' ? 'bg-primary' : (o.status === 'Đã giao' ? 'bg-success' : 'bg-danger'))) %>">
+            <span class="badge <%=
+              o.status === 'Chờ xác nhận' ? 'bg-warning text-dark' :
+              o.status === 'Đang làm'     ? 'bg-info' :
+              o.status === 'Hoàn thành'   ? 'bg-primary' :
+              o.status === 'Đã giao'      ? 'bg-success' : 'bg-danger'
+            %>">
               <%= o.status %>
             </span>
           </td>
           <td><%= new Date(o.deliveryDate).toLocaleDateString('vi-VN') %></td>
+          <td><%= o.deliveryAddress || '—' %></td> <%-- ✅ THÊM MỚI --%>
           <td>
             <form method="post" action="/staff/update-status/<%= o.id %>" class="d-flex gap-2">
               <select name="newStatus" class="form-select form-select-sm w-auto">
                 <option value="Chờ xác nhận" <%= o.status === 'Chờ xác nhận' ? 'selected' : '' %>>Chờ xác nhận</option>
-                <option value="Đang làm" <%= o.status === 'Đang làm' ? 'selected' : '' %>>Đang làm</option>
-                <option value="Hoàn thành" <%= o.status === 'Hoàn thành' ? 'selected' : '' %>>Hoàn thành</option>
-                <option value="Đã giao" <%= o.status === 'Đã giao' ? 'selected' : '' %>>Đã giao</option>
-                <option value="Đã hủy" <%= o.status === 'Đã hủy' ? 'selected' : '' %>>Đã hủy</option>
+                <option value="Đang làm"     <%= o.status === 'Đang làm'     ? 'selected' : '' %>>Đang làm</option>
+                <option value="Hoàn thành"   <%= o.status === 'Hoàn thành'   ? 'selected' : '' %>>Hoàn thành</option>
+                <option value="Đã giao"      <%= o.status === 'Đã giao'      ? 'selected' : '' %>>Đã giao</option>
+                <option value="Đã hủy"       <%= o.status === 'Đã hủy'       ? 'selected' : '' %>>Đã hủy</option>
               </select>
-              <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-arrow-repeat"></i> Cập nhật</button>
+              <button type="submit" class="btn btn-sm btn-primary">
+                <i class="bi bi-arrow-repeat"></i> Cập nhật
+              </button>
             </form>
           </td>
         </tr>
@@ -35,4 +58,5 @@
     </tbody>
   </table>
 </div>
+
 <%- include('partials/footer') %>
