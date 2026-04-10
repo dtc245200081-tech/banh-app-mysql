@@ -38,7 +38,7 @@
             </span>
           </td>
           <td><%= new Date(o.deliveryDate).toLocaleDateString('vi-VN') %></td>
-          <td><%= o.deliveryAddress || '—' %></td> <%-- ✅ THÊM MỚI --%>
+          <td><%= o.deliveryAddress || '—' %></td>
           <td>
             <form method="post" action="/staff/update-status/<%= o.id %>" class="d-flex gap-2">
               <select name="newStatus" class="form-select form-select-sm w-auto">
