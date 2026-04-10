@@ -1,12 +1,23 @@
 <%- include('partials/header') %>
+
 <h2><i class="bi bi-cart-fill"></i> Giỏ hàng của bạn</h2>
+
 <% if (!cart || cart.length === 0) { %>
-  <div class="alert alert-warning text-center">🛒 Giỏ hàng trống. <a href="/customer/products" class="alert-link">Tiếp tục mua hàng</a></div>
+  <div class="alert alert-warning text-center">
+    🛒 Giỏ hàng trống. <a href="/customer/products" class="alert-link">Tiếp tục mua hàng</a>
+  </div>
 <% } else { %>
+
   <div class="table-responsive">
     <table class="table table-custom">
       <thead>
-        <tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th>Hành động</th></tr>
+        <tr>
+          <th>Sản phẩm</th>
+          <th>Đơn giá</th>
+          <th>Số lượng</th>
+          <th>Thành tiền</th>
+          <th>Hành động</th>
+        </tr>
       </thead>
       <tbody>
         <% let total = 0; %>
@@ -21,7 +32,13 @@
               </form>
             </td>
             <td><strong><%= (item.price * item.quantity).toLocaleString() %>đ</strong></td>
-            <td><a href="/customer/remove-from-cart/<%= idx %>" class="btn btn-sm btn-danger" onclick="return confirm('Xóa?')"><i class="bi bi-trash"></i></a></td>
+            <td>
+              <a href="/customer/remove-from-cart/<%= idx %>"
+                class="btn btn-sm btn-danger"
+                onclick="return confirm('Xóa sản phẩm này?')">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
           </tr>
         <% }) %>
       </tbody>
@@ -34,10 +51,35 @@
       </tfoot>
     </table>
   </div>
-  <form method="post" action="/customer/place-order" class="mt-3 text-end">
-    <label class="form-label fw-bold">Ngày giao hàng:</label>
-    <input type="date" name="deliveryDate" class="form-control d-inline w-auto" required>
-    <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 ms-3">Đặt hàng <i class="bi bi-check2-circle"></i></button>
+
+  <form method="post" action="/customer/place-order" class="mt-3">
+    <div class="row justify-content-end g-3">
+
+      <div class="col-12 col-md-6">
+        <label class="form-label fw-bold">📍 Địa chỉ nhận hàng:</label>
+        <input
+          type="text"
+          name="deliveryAddress"
+          class="form-control"
+          placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"
+          required
+        >
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="form-label fw-bold">📅 Ngày giao hàng:</label>
+        <input type="date" name="deliveryDate" class="form-control" required>
+      </div>
+
+      <div class="col-12 text-end">
+        <button type="submit" class="btn btn-success btn-lg rounded-pill px-5">
+          Đặt hàng <i class="bi bi-check2-circle"></i>
+        </button>
+      </div>
+
+    </div>
   </form>
+
 <% } %>
+
 <%- include('partials/footer') %>
