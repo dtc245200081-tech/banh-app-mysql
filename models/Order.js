@@ -6,10 +6,13 @@ const Order = sequelize.define('Order', {
   customerId: { type: DataTypes.INTEGER, allowNull: false },
   customerName: { type: DataTypes.STRING, allowNull: false },
   totalAmount: { type: DataTypes.INTEGER, allowNull: false },
-  status: { type: DataTypes.ENUM('Chờ xác nhận', 'Đang làm', 'Hoàn thành', 'Đã giao', 'Đã hủy'), defaultValue: 'Chờ xác nhận' },
+  status: {
+    type: DataTypes.ENUM('Chờ xác nhận', 'Đang làm', 'Hoàn thành', 'Đã giao', 'Đã hủy'),
+    defaultValue: 'Chờ xác nhận'
+  },
   orderDate: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   deliveryDate: { type: DataTypes.DATEONLY, allowNull: false },
-  deliveryAddress: { type: DataTypes.STRING, allowNull: false },
+  deliveryAddress: { type: DataTypes.STRING, allowNull: false }, // ✅ THÊM MỚI
   isPaid: { type: DataTypes.BOOLEAN, defaultValue: false }
 }, {
   tableName: 'orders',
