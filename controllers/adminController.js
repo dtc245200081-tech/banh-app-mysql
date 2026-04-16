@@ -12,16 +12,14 @@ exports.requireAdmin = (req, res, next) => {
 // ========== QUẢN LÝ SẢN PHẨM ==========
 exports.listProducts = async (req, res) => {
   const products = await Product.findAll();
-  // Lấy thông báo lỗi từ query string (nếu có)
   const error = req.query.error;
   res.render('admin-products', { products, error });
 };
 
 exports.addProduct = async (req, res) => {
   const { name, price, description, imageUrl } = req.body;
-
-  // --- KIỂM TRA GIÁ HỢP LỆ ---
   const numericPrice = parseInt(price);
+
   if (isNaN(numericPrice) || numericPrice < 0) {
     return res.redirect('/admin/products?error=Giá sản phẩm phải là số dương hoặc bằng 0');
   }
@@ -37,9 +35,8 @@ exports.addProduct = async (req, res) => {
 
 exports.editProduct = async (req, res) => {
   const { name, price, description, imageUrl } = req.body;
-
-  // --- KIỂM TRA GIÁ HỢP LỆ ---
   const numericPrice = parseInt(price);
+
   if (isNaN(numericPrice) || numericPrice < 0) {
     return res.redirect('/admin/products?error=Giá sản phẩm phải là số dương hoặc bằng 0');
   }
@@ -130,11 +127,18 @@ exports.getSettings = async (req, res) => {
   if (!setting) {
     setting = await Setting.create({ id: 1, dailyCapacity: 50 });
   }
-  res.render('admin-settings', { capacity: setting.dailyCapacity });
+  const error = req.query.error;
+  res.render('admin-settings', { capacity: setting.dailyCapacity, error });
 };
 
 exports.updateSettings = async (req, res) => {
   const { capacity } = req.body;
-  await Setting.upsert({ id: 1, dailyCapacity: parseInt(capacity) });
+  const numericCapacity = parseInt(capacity);
+
+  if (isNaN(numericCapacity) || numericCapacity <= 0) {
+    return res.redirect('/admin/settings?error=Công suất phải là số dương lớn hơn 0');
+  }
+
+  await Setting.upsert({ id: 1, dailyCapacity: numericCapacity });
   res.redirect('/admin/settings');
 };
